@@ -132,8 +132,9 @@ function isTriangle(a, b, c) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) { // Спросить у ментора
+  return (rect1.top < rect2.top + rect2.height || rect1.top + rect1.height > rect2.top
+    || rect1.width + rect1.left < rect2.left || rect1.left > rect2.left + rect2.width);
 }
 
 
@@ -214,8 +215,8 @@ function findFirstSingleChar(str) {
  *   5, 3, true, true   => '[3, 5]'
  *
  */
-function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
-  throw new Error('Not implemented');
+function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
+  return `${isStartIncluded ? '[' : '('}${a <= b ? `${a}, ${b}` : `${b}, ${a}`}${isEndIncluded ? ']' : ')'}`;
 }
 
 
@@ -231,8 +232,8 @@ function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
  * 'rotator' => 'rotator'
  * 'noon' => 'noon'
  */
-function reverseString(/* str */) {
-  throw new Error('Not implemented');
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
 
 
@@ -248,8 +249,8 @@ function reverseString(/* str */) {
  *   87354 => 45378
  *   34143 => 34143
  */
-function reverseInteger(/* num */) {
-  throw new Error('Not implemented');
+function reverseInteger(num) {
+  return parseInt(num.toString().split('').reverse().join(''), 10);
 }
 
 
@@ -273,8 +274,28 @@ function reverseInteger(/* num */) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) { // Спросить у ментора
+  const ccnStr = ccn.toString();
+
+  let nCheck = 0;
+  let bEven = false;
+
+  for (let n = ccnStr.length - 1; n >= 0; n -= 1) {
+    const cDigit = ccnStr.charAt(n);
+    let nDigit = parseInt(cDigit, 10);
+
+    if (bEven) {
+      nDigit *= 2;
+      if (nDigit > 9) {
+        nDigit -= 9;
+      }
+    }
+
+    nCheck += nDigit;
+    bEven = !bEven;
+  }
+
+  return (nCheck % 10) === 0;
 }
 
 /**
@@ -291,8 +312,16 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  const result = num.toString().split('').reduce((acc, el) => acc + +el, 0);
+  const [num1, num2] = [result.toString().split('')[0], result > 9 ? result.toString().split('')[result.toString().split('').length - 1] : 0];
+  const sum = +num1 + +num2;
+
+  if (sum > 9) {
+    return getDigitalRoot(sum);
+  }
+
+  return sum;
 }
 
 
@@ -317,8 +346,37 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const brackets = {
+    ']': '[',
+    ')': '(',
+    '}': '{',
+    '>': '<',
+  };
+
+  const bracketsKeys = Object.keys(brackets);
+
+  const bracketsArray = [];
+
+  for (let i = 0; i < str.length; i += 1) {
+    const lastEl = bracketsArray[bracketsArray.length - 1];
+
+    if (bracketsKeys.includes(str[i])) {
+      if (lastEl && brackets[str[i]] === lastEl) {
+        bracketsArray.pop();
+      } else {
+        return false;
+      }
+    } else {
+      bracketsArray.push(str[i]);
+    }
+  }
+
+  if (bracketsArray.length === 0) {
+    return true;
+  }
+
+  return false;
 }
 
 
@@ -342,8 +400,8 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  return num.toString(n);
 }
 
 
@@ -359,8 +417,22 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  let localPathes = pathes;
+  let commonPath = '';
+  let stopWord = '';
+
+  while ([...new Set(localPathes.map((el) => el[0]))].length === 1) {
+    stopWord += localPathes[0][0];
+    if (localPathes[0][0] === '/') {
+      commonPath += stopWord;
+      stopWord = '';
+    }
+
+    localPathes = [...localPathes.map((el) => el.slice(1))];
+  }
+
+  return commonPath;
 }
 
 
@@ -382,8 +454,22 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const resultMatrix = [];
+  let innerValue = 0;
+
+  for (let i = 0; i < m1.length; i += 1) {
+    resultMatrix.push([]);
+    for (let j = 0; j < m2[i].length; j += 1) {
+      for (let e = 0; e < m2.length; e += 1) {
+        innerValue += (m1[i][e] * m2[e][j]);
+      }
+      resultMatrix[i].push(innerValue);
+      innerValue = 0;
+    }
+  }
+
+  return resultMatrix;
 }
 
 
@@ -417,8 +503,37 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const currentTikTakToe = position;
+
+  function checkTheWinner(el) {
+    return (((currentTikTakToe[0][0] === currentTikTakToe[0][1])
+    && (currentTikTakToe[0][1] === currentTikTakToe[0][2]) && (currentTikTakToe[0][2] === el))
+      || ((currentTikTakToe[1][0] === currentTikTakToe[1][1])
+      && (currentTikTakToe[1][1] === currentTikTakToe[1][2]) && (currentTikTakToe[1][2] === el))
+      || ((currentTikTakToe[2][0] === currentTikTakToe[2][1])
+      && (currentTikTakToe[2][1] === currentTikTakToe[2][2]) && (currentTikTakToe[2][2] === el))
+      || ((currentTikTakToe[0][0] === currentTikTakToe[1][0])
+      && (currentTikTakToe[1][0] === currentTikTakToe[2][0]) && (currentTikTakToe[2][0] === el))
+      || ((currentTikTakToe[0][1] === currentTikTakToe[1][1])
+      && (currentTikTakToe[1][1] === currentTikTakToe[2][1]) && (currentTikTakToe[2][1] === el))
+      || ((currentTikTakToe[0][2] === currentTikTakToe[1][2])
+      && (currentTikTakToe[1][2] === currentTikTakToe[2][2]) && (currentTikTakToe[2][2] === el))
+      || ((currentTikTakToe[0][0] === currentTikTakToe[1][1])
+      && (currentTikTakToe[1][1] === currentTikTakToe[2][2]) && (currentTikTakToe[2][2] === el))
+      || ((currentTikTakToe[2][0] === currentTikTakToe[1][1])
+      && (currentTikTakToe[1][1] === currentTikTakToe[0][2]) && (currentTikTakToe[0][2] === el)));
+  }
+
+  if (checkTheWinner('X')) {
+    return 'X';
+  }
+
+  if (checkTheWinner('0')) {
+    return '0';
+  }
+
+  return undefined;
 }
 
 
