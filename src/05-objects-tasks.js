@@ -114,95 +114,81 @@ function fromJSON(proto, json) {
  *  For more examples see unit tests.
  */
 
-class CssSelectorBuiderClass {
-  constructor(selector) {
-    this.selector = selector;
-    return this;
-  }
+const cssSelectorBuilder = {
+  selector: '',
+  combinesArray: [],
+  rightCombo: [
+    'element',
+    'id',
+    'class',
+    'attribute',
+    'pseudo-class',
+    'pseudo-element',
+  ],
 
   element(value) {
-    try {
-      this.selector += `${value}`;
-    } catch (error) {
-      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    if (this.combinesArray.includes('element')) {
+      throw new Error(
+        'Element, id and pseudo-element should not occur more then one time inside the selector',
+      );
     }
+
+    this.combinesArray.push('element');
+    this.selector += `${value}`;
+
     return this;
-  }
+  },
 
   id(value) {
-    try {
-      this.selector += `#${value}`;
-    } catch (error) {
-      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    if (this.combinesArray.includes('id')) {
+      throw new Error(
+        'Element, id and pseudo-element should not occur more then one time inside the selector',
+      );
     }
+    this.combinesArray.push('id');
+    this.selector += `#${value}`;
     return this;
-  }
+  },
 
   class(value) {
+    this.combinesArray.push('class');
     this.selector += `.${value}`;
     return this;
-  }
+  },
 
   attr(value) {
+    this.combinesArray.push('attribute');
     this.selector += `[${value}]`;
     return this;
-  }
+  },
 
   pseudoClass(value) {
+    this.combinesArray.push('pseudo-class');
     this.selector += `:${value}`;
     return this;
-  }
+  },
 
   pseudoElement(value) {
-    try {
-      this.selector += `::${value}`;
-    } catch (error) {
-      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    if (this.combinesArray.includes('pseudo-element')) {
+      throw new Error(
+        'Element, id and pseudo-element should not occur more then one time inside the selector',
+      );
     }
+    this.combinesArray.push('pseudo-element');
+    this.selector += `::${value}`;
     return this;
-  }
+  },
 
   combine(selector1, combinator, selector2) {
     this.selector += `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
     return this;
-  }
+  },
 
   stringify() {
     const oldSel = this.selector;
+    this.combinesArray = [];
     this.selector = '';
     return oldSel;
-  }
-}
-
-const cssSelectorBuilder = {
-  selector: '',
-
-  element(value) {
-    return new CssSelectorBuiderClass(`${value}`);
-  },
-
-  id(value) {
-    return new CssSelectorBuiderClass(`#${value}`);
-  },
-
-  class(value) {
-    return new CssSelectorBuiderClass(`.${value}`);
-  },
-
-  attr(value) {
-    return new CssSelectorBuiderClass(`[${value}]`);
-  },
-
-  pseudoClass(value) {
-    return new CssSelectorBuiderClass(`:${value}`);
-  },
-
-  pseudoElement(value) {
-    return new CssSelectorBuiderClass(`::${value}`);
-  },
-
-  combine(selector1, combinator, selector2) {
-    return new CssSelectorBuiderClass(`${selector1.stringify()} ${combinator} ${selector2.stringify()}`);
   },
 };
 

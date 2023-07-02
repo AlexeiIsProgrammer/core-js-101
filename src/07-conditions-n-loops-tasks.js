@@ -133,8 +133,8 @@ function isTriangle(a, b, c) {
  *
  */
 function doRectanglesOverlap(rect1, rect2) { // Спросить у ментора
-  return (rect1.top < rect2.top + rect2.height || rect1.top + rect1.height > rect2.top
-    || rect1.width + rect1.left < rect2.left || rect1.left > rect2.left + rect2.width);
+  return ((rect1.top <= rect2.top + rect2.height && rect1.top + rect1.height >= rect2.top)
+    && (rect1.width + rect1.left >= rect2.left && rect1.left <= rect2.left + rect2.width));
 }
 
 
@@ -508,21 +508,21 @@ function evaluateTicTacToePosition(position) {
 
   function checkTheWinner(el) {
     return (((currentTikTakToe[0][0] === currentTikTakToe[0][1])
-    && (currentTikTakToe[0][1] === currentTikTakToe[0][2]) && (currentTikTakToe[0][2] === el))
+      && (currentTikTakToe[0][1] === currentTikTakToe[0][2]) && (currentTikTakToe[0][2] === el))
       || ((currentTikTakToe[1][0] === currentTikTakToe[1][1])
-      && (currentTikTakToe[1][1] === currentTikTakToe[1][2]) && (currentTikTakToe[1][2] === el))
+        && (currentTikTakToe[1][1] === currentTikTakToe[1][2]) && (currentTikTakToe[1][2] === el))
       || ((currentTikTakToe[2][0] === currentTikTakToe[2][1])
-      && (currentTikTakToe[2][1] === currentTikTakToe[2][2]) && (currentTikTakToe[2][2] === el))
+        && (currentTikTakToe[2][1] === currentTikTakToe[2][2]) && (currentTikTakToe[2][2] === el))
       || ((currentTikTakToe[0][0] === currentTikTakToe[1][0])
-      && (currentTikTakToe[1][0] === currentTikTakToe[2][0]) && (currentTikTakToe[2][0] === el))
+        && (currentTikTakToe[1][0] === currentTikTakToe[2][0]) && (currentTikTakToe[2][0] === el))
       || ((currentTikTakToe[0][1] === currentTikTakToe[1][1])
-      && (currentTikTakToe[1][1] === currentTikTakToe[2][1]) && (currentTikTakToe[2][1] === el))
+        && (currentTikTakToe[1][1] === currentTikTakToe[2][1]) && (currentTikTakToe[2][1] === el))
       || ((currentTikTakToe[0][2] === currentTikTakToe[1][2])
-      && (currentTikTakToe[1][2] === currentTikTakToe[2][2]) && (currentTikTakToe[2][2] === el))
+        && (currentTikTakToe[1][2] === currentTikTakToe[2][2]) && (currentTikTakToe[2][2] === el))
       || ((currentTikTakToe[0][0] === currentTikTakToe[1][1])
-      && (currentTikTakToe[1][1] === currentTikTakToe[2][2]) && (currentTikTakToe[2][2] === el))
+        && (currentTikTakToe[1][1] === currentTikTakToe[2][2]) && (currentTikTakToe[2][2] === el))
       || ((currentTikTakToe[2][0] === currentTikTakToe[1][1])
-      && (currentTikTakToe[1][1] === currentTikTakToe[0][2]) && (currentTikTakToe[0][2] === el)));
+        && (currentTikTakToe[1][1] === currentTikTakToe[0][2]) && (currentTikTakToe[0][2] === el)));
   }
 
   if (checkTheWinner('X')) {
